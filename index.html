@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BudgetMate</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header>
+    <h1>BudgetMate</h1>
+    <p>Student-Focused Financial Planning</p>
+  </header>
+
+  <nav>
+    <button onclick="showSection('login')">Login</button>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('accounts')">Accounts</button>
+    <button onclick="showSection('transactions')">Transactions</button>
+    <button onclick="showSection('goals')">Goals</button>
+    <button onclick="logout()">Logout</button>
+  </nav>
+
+  <main>
+    <section id="login" class="page active">
+      <h2>Account Login / Registration</h2>
+      <input id="name" placeholder="Full Name" />
+      <input id="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Password" />
+      <button onclick="createUser()">Create Account</button>
+      <button onclick="login()">Login</button>
+      <button onclick="resetPassword()">Reset Password</button>
+      <p id="loginMessage"></p>
+    </section>
+
+    <section id="dashboard" class="page">
+      <h2>Financial Dashboard</h2>
+      <p>Welcome to your dashboard! Here you can see an overview of your finances.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Total Balance</h3>
+          <p id="totalBalance">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>Spending Limit</h3>
+          <p id="limitDisplay">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>Recent Activity</h3>
+          <p id="recentActivity">No transactions yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="accounts" class="page">
+      <h2>Account Management</h2>
+
+      <h3>Create Checking or Savings Account</h3>
+      <input id="accountName" placeholder="Account Name" />
+      <select id="accountType">
+        <option value="Checking">Checking</option>
+        <option value="Savings">Savings</option>
+      </select>
+      <button onclick="createAccount()">Create Account</button>
+
+      <h3>Deposit / Withdraw</h3>
+      <select id="accountSelect"><option value=" " disabled selected>Select Account</option></select>
+      <input id="amount" type="number" placeholder="Amount" />
+      <button onclick="deposit()">Deposit</button>
+      <button onclick="withdraw()">Withdraw</button>
+
+      <h3>Transfer Between Accounts</h3>
+      <select id="fromAccount"></select>
+      <select id="toAccount"></select>
+      <input id="transferAmount" type="number" placeholder="Transfer Amount" />
+      <button onclick="transfer()">Transfer</button>
+
+      <h3>Set Spending Limit</h3>
+      <input id="spendingLimit" type="number" placeholder="Spending Limit" />
+      <button onclick="setLimit()">Save Limit</button>
+
+      <h3>Accounts</h3>
+      <div id="accountList"></div>
+    </section>
+
+    <section id="transactions" class="page">
+      <h2>Transaction History</h2>
+      <div id="transactionList"></div>
+    </section>
+
+    <section id="goals" class="page">
+      <h2>Savings Goals & Scheduled Payments</h2>
+
+      <h3>Add Savings Goal</h3>
+      <input id="goalName" placeholder="Goal Name" />
+      <input id="goalAmount" type="number" placeholder="Goal Amount" />
+      <button onclick="addGoal()">Add Goal</button>
+
+      <h3>Schedule Payment</h3>
+      <input id="paymentName" placeholder="Payment Name" />
+      <input id="paymentAmount" type="number" placeholder="Payment Amount" />
+      <input id="paymentDate" type="date" />
+      <button onclick="schedulePayment()">Schedule Payment</button>
+
+      <h3>Goals</h3>
+      <div id="goalList"></div>
+
+      <h3>Scheduled Payments</h3>
+      <div id="paymentList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>MMAK Solutions | COSC 412</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
