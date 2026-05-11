@@ -14,103 +14,192 @@
   </header>
 
   <nav>
-    <button onclick="showSection('login')">Login</button>
-    <button onclick="showSection('dashboard')">Dashboard</button>
-    <button onclick="showSection('accounts')">Accounts</button>
-    <button onclick="showSection('transactions')">Transactions</button>
-    <button onclick="showSection('goals')">Goals</button>
-    <button onclick="logout()">Logout</button>
+    <button data-auth="guest" data-section="login" onclick="showSection('login')">Login</button>
+    <button data-auth="user" data-section="dashboard" onclick="showSection('dashboard')">Dashboard</button>
+    <button data-auth="user" data-section="accounts" onclick="showSection('accounts')">Accounts</button>
+    <button data-auth="user" data-section="transactions" onclick="showSection('transactions')">Transactions</button>
+    <button data-auth="user" data-section="goals" onclick="showSection('goals')">Goals</button>
+    <button data-auth="user" onclick="logout()">Logout</button>
   </nav>
 
   <main>
+    <!-- Login / Registration -->
     <section id="login" class="page active">
-      <h2>Account Login / Registration</h2>
-      <input id="name" placeholder="Full Name" />
-      <input id="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password" />
-      <button onclick="createUser()">Create Account</button>
-      <button onclick="login()">Login</button>
-      <button onclick="resetPassword()">Reset Password</button>
-      <p id="loginMessage"></p>
-    </section>
+      <div class="login-card">
+        <h2 id="authTitle">Welcome Back</h2>
+        <p class="subtitle" id="authSubtitle">Sign in to manage your finances</p>
+        <p id="loginMessage" class="message"></p>
 
-    <section id="dashboard" class="page">
-      <h2>Financial Dashboard</h2>
-      <p>Welcome to your dashboard! Here you can see an overview of your finances.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>Total Balance</h3>
-          <p id="totalBalance">$0.00</p>
+        <div id="signupFields" style="display:none;">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input id="name" placeholder="Full Name" required />
         </div>
 
-        <div class="card">
-          <h3>Spending Limit</h3>
-          <p id="limitDisplay">$0.00</p>
+        <label for="email">Email <span class="required">*</span></label>
+        <input id="email" type="email" placeholder="Email" required />
+
+        <label for="password">Password <span class="required">*</span></label>
+        <input id="password" type="password" placeholder="Password" required />
+
+        <div id="loginActions">
+          <button onclick="login()" style="width:100%">Login</button>
+          <p class="auth-toggle">Don't have an account? <a href="#" onclick="toggleAuthMode(true); return false;">Sign Up</a></p>
+          <p class="auth-toggle"><a href="#" onclick="resetPassword(); return false;">Forgot Password?</a></p>
         </div>
 
-        <div class="card">
-          <h3>Recent Activity</h3>
-          <p id="recentActivity">No transactions yet.</p>
+        <div id="signupActions" style="display:none;">
+          <button onclick="createUser()" style="width:100%">Create Account</button>
+          <p class="auth-toggle">Already have an account? <a href="#" onclick="toggleAuthMode(false); return false;">Login</a></p>
         </div>
       </div>
     </section>
 
+    <!-- Dashboard -->
+    <section id="dashboard" class="page">
+      <h2>Financial Dashboard</h2>
+      <p id="dashboardMessage" class="message"></p>
+      <p class="subtitle" id="welcomeText">Welcome! Here's an overview of your finances.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Total Balance</h3>
+          <p class="card-value" id="totalBalance">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>Spending Limit</h3>
+          <p class="card-value" id="limitDisplay">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>Recent Activity</h3>
+          <p class="card-value" id="recentActivity">No transactions yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accounts (Tabbed) -->
     <section id="accounts" class="page">
       <h2>Account Management</h2>
+      <p id="accountsMessage" class="message"></p>
 
-      <h3>Create Checking or Savings Account</h3>
-      <input id="accountName" placeholder="Account Name" />
-      <select id="accountType">
-        <option value="Checking">Checking</option>
-        <option value="Savings">Savings</option>
-      </select>
-      <button onclick="createAccount()">Create Account</button>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('accounts', 'tab-create')">New Account</button>
+        <button class="tab" onclick="showTab('accounts', 'tab-deposit')">Deposit / Withdraw</button>
+        <button class="tab" onclick="showTab('accounts', 'tab-transfer')">Transfer</button>
+        <button class="tab" onclick="showTab('accounts', 'tab-settings')">Settings</button>
+      </div>
 
-      <h3>Deposit / Withdraw</h3>
-      <select id="accountSelect"><option value=" " disabled selected>Select Account</option></select>
-      <input id="amount" type="number" placeholder="Amount" />
-      <button onclick="deposit()">Deposit</button>
-      <button onclick="withdraw()">Withdraw</button>
+      <div class="tab-content">
+        <!-- Tab: Create Account -->
+        <div id="tab-create" class="tab-panel active">
+          <h3>Create Checking or Savings Account</h3>
+          <label for="accountName">Account Name <span class="required">*</span></label>
+          <input id="accountName" placeholder="Account Name" required />
 
-      <h3>Transfer Between Accounts</h3>
-      <select id="fromAccount"></select>
-      <select id="toAccount"></select>
-      <input id="transferAmount" type="number" placeholder="Transfer Amount" />
-      <button onclick="transfer()">Transfer</button>
+          <label for="accountType">Account Type</label>
+          <select id="accountType">
+            <option value="Checking">Checking</option>
+            <option value="Savings">Savings</option>
+          </select>
+          <button onclick="createAccount()">Create Account</button>
+        </div>
 
-      <h3>Set Spending Limit</h3>
-      <input id="spendingLimit" type="number" placeholder="Spending Limit" />
-      <button onclick="setLimit()">Save Limit</button>
+        <!-- Tab: Deposit / Withdraw -->
+        <div id="tab-deposit" class="tab-panel">
+          <h3>Deposit / Withdraw</h3>
+          <label for="accountSelect">Select Account</label>
+          <select id="accountSelect"><option value="" disabled selected>Select Account</option></select>
 
-      <h3>Accounts</h3>
+          <label for="amount">Amount <span class="required">*</span></label>
+          <input id="amount" type="number" placeholder="Amount" min="0.01" step="0.01" required />
+          <div class="btn-group">
+            <button onclick="deposit()">Deposit</button>
+            <button onclick="withdraw()">Withdraw</button>
+          </div>
+        </div>
+
+        <!-- Tab: Transfer -->
+        <div id="tab-transfer" class="tab-panel">
+          <h3>Transfer Between Accounts</h3>
+          <label for="fromAccount">From Account</label>
+          <select id="fromAccount"></select>
+
+          <label for="toAccount">To Account</label>
+          <select id="toAccount"></select>
+
+          <label for="transferAmount">Transfer Amount <span class="required">*</span></label>
+          <input id="transferAmount" type="number" placeholder="Transfer Amount" min="0.01" step="0.01" required />
+          <button onclick="transfer()">Transfer</button>
+        </div>
+
+        <!-- Tab: Settings -->
+        <div id="tab-settings" class="tab-panel">
+          <h3>Set Spending Limit</h3>
+          <p class="subtitle">Limit the maximum amount per withdrawal or transfer.</p>
+          <label for="spendingLimit">Spending Limit</label>
+          <input id="spendingLimit" type="number" placeholder="Spending Limit" min="0" step="0.01" />
+          <button onclick="setLimit()">Save Limit</button>
+        </div>
+      </div>
+
+      <h3>Your Accounts</h3>
       <div id="accountList"></div>
+      <p id="noAccounts" class="empty-state">No accounts yet. Create one above to get started.</p>
     </section>
 
+    <!-- Transactions -->
     <section id="transactions" class="page">
       <h2>Transaction History</h2>
+      <p id="transactionsMessage" class="message"></p>
       <div id="transactionList"></div>
+      <p id="noTransactions" class="empty-state">No transactions yet.</p>
     </section>
 
+    <!-- Goals & Payments (Tabbed) -->
     <section id="goals" class="page">
       <h2>Savings Goals & Scheduled Payments</h2>
+      <p id="goalsMessage" class="message"></p>
 
-      <h3>Add Savings Goal</h3>
-      <input id="goalName" placeholder="Goal Name" />
-      <input id="goalAmount" type="number" placeholder="Goal Amount" />
-      <button onclick="addGoal()">Add Goal</button>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('goals', 'tab-goals')">Savings Goals</button>
+        <button class="tab" onclick="showTab('goals', 'tab-payments')">Scheduled Payments</button>
+      </div>
 
-      <h3>Schedule Payment</h3>
-      <input id="paymentName" placeholder="Payment Name" />
-      <input id="paymentAmount" type="number" placeholder="Payment Amount" />
-      <input id="paymentDate" type="date" />
-      <button onclick="schedulePayment()">Schedule Payment</button>
+      <div class="tab-content">
+        <!-- Tab: Goals -->
+        <div id="tab-goals" class="tab-panel active">
+          <h3>Add Savings Goal</h3>
+          <label for="goalName">Goal Name <span class="required">*</span></label>
+          <input id="goalName" placeholder="Goal Name" required />
 
-      <h3>Goals</h3>
-      <div id="goalList"></div>
+          <label for="goalAmount">Goal Amount <span class="required">*</span></label>
+          <input id="goalAmount" type="number" placeholder="Goal Amount" min="0.01" step="0.01" required />
+          <button onclick="addGoal()">Add Goal</button>
 
-      <h3>Scheduled Payments</h3>
-      <div id="paymentList"></div>
+          <h3>Your Goals</h3>
+          <div id="goalList"></div>
+          <p id="noGoals" class="empty-state">No goals yet. Add one above to start saving.</p>
+        </div>
+
+        <!-- Tab: Payments -->
+        <div id="tab-payments" class="tab-panel">
+          <h3>Schedule Payment</h3>
+          <label for="paymentName">Payment Name <span class="required">*</span></label>
+          <input id="paymentName" placeholder="Payment Name" required />
+
+          <label for="paymentAmount">Payment Amount <span class="required">*</span></label>
+          <input id="paymentAmount" type="number" placeholder="Payment Amount" min="0.01" step="0.01" required />
+
+          <label for="paymentDate">Payment Date <span class="required">*</span></label>
+          <input id="paymentDate" type="date" required />
+          <button onclick="schedulePayment()">Schedule Payment</button>
+
+          <h3>Scheduled Payments</h3>
+          <div id="paymentList"></div>
+          <p id="noPayments" class="empty-state">No payments scheduled.</p>
+        </div>
+      </div>
     </section>
   </main>
 
